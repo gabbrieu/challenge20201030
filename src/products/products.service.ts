@@ -13,7 +13,7 @@ export class ProductsService {
   ) {}
 
   async getOne(code: string): Promise<Products> {
-    const product = await this.repository.findOne(code);
+    const product = await this.repository.findOne({ where: { code } });
     if (!product) throw new NotFoundException('Product not found');
 
     return product;
@@ -31,8 +31,8 @@ export class ProductsService {
   }
 
   async update(code: string, body: UpdateProductDto): Promise<Products> {
-    const product = await this.repository.findOne(code);
-    await this.repository.update(code, body);
+    const product = await this.getOne(code);
+    await this.repository.update(product.id, body);
 
     return { ...product, ...body };
   }

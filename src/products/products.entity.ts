@@ -1,5 +1,5 @@
-import { IsEnum, IsNumber, IsString } from 'class-validator';
-import { Column, Entity, PrimaryColumn } from 'typeorm';
+import { IsEnum, IsNumber, IsString, IsUUID } from 'class-validator';
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 export enum StatusEnum {
   DRAFT = 'draft',
@@ -9,7 +9,11 @@ export enum StatusEnum {
 
 @Entity()
 export class Products {
-  @PrimaryColumn()
+  @PrimaryGeneratedColumn('uuid')
+  @IsUUID()
+  id: string;
+
+  @Column({ type: 'bigint' })
   @IsNumber()
   code: number;
 

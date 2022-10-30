@@ -44,8 +44,8 @@ export class ProductsController {
   })
   @ApiOperation({ summary: 'Obtém todos os produtos' })
   async getAll(@Query() filters?: GetAllFiltersDto) {
-    filters.take = +filters.take;
-    filters.skip = +filters.skip;
+    filters.take = isNaN(+filters.take) ? 50 : +filters.take;
+    filters.skip = isNaN(+filters.skip) ? 50 : +filters.skip;
     return await this.service.getAll(filters);
   }
 
