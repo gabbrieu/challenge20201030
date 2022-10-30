@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { getConnection, Repository } from 'typeorm';
 import { Files } from './files/files.entity';
 
 @Injectable()
@@ -15,10 +15,13 @@ export class AppService {
       order: { createdAt: 'DESC' },
     });
 
+    const databaseConnection = getConnection().isConnected;
+
     return {
-      lastTimeExecutedCron: files[0].createdAt,
-      upTime: `Time online: ${this.formatTime(process.uptime())}s`,
+      upTime: `${this.formatTime(process.uptime())}s`,
       memoryUsage: process.memoryUsage(),
+      lastTimeExecutedCron: files[0].createdAt,
+      isDatabaseOnline: databaseConnection,
     };
   }
 
