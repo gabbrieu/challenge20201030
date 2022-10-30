@@ -40,7 +40,8 @@ export class ProductsController {
   @Get()
   @ApiOkResponse({
     description: 'Produtos retornados com sucesso',
-    type: Array<Products>,
+    type: Products,
+    isArray: true,
   })
   @ApiOperation({ summary: 'Obtém todos os produtos' })
   async getAll(@Query() filters?: GetAllFiltersDto) {

@@ -24,7 +24,7 @@ export class CronService {
     private readonly httpService: HttpService,
   ) {}
 
-  @Cron(CronExpression.EVERY_10_HOURS)
+  @Cron(CronExpression.EVERY_DAY_AT_1AM)
   async handleCron() {
     const fileName = await this.getNextFileName();
     const chunks = [];
@@ -87,7 +87,7 @@ export class CronService {
     }
   }
 
-  async saveFileOnDatabase(fileName: string) {
+  async saveFileOnDatabase(fileName: string): Promise<void> {
     const fileStream = fs.createReadStream(
       `${__dirname}/../../unzippedFiles/${fileName}`,
     );
@@ -95,8 +95,8 @@ export class CronService {
     const rl = readline.createInterface({
       input: fileStream,
     });
-    let productsOnJsonFile = [];
 
+    let productsOnJsonFile = [];
     for await (const line of rl) {
       if (productsOnJsonFile.length === 100) {
         break;
@@ -104,7 +104,16 @@ export class CronService {
       productsOnJsonFile.push(JSON.parse(line));
     }
 
-    productsOnJsonFile = productsOnJsonFile.map((product) => {
+    productsOnJsonFile = this.formatProductArray(productsOnJsonFile);
+    await this.productRepository.insert(productsOnJsonFile);
+    const file: Partial<Files> = {
+      fileName,
+    };
+    await this.fileRepository.save(file);
+  }
+
+  private formatProductArray(product: any[]): Products[] {
+    return product.map((product) => {
       return {
         code: isNaN(+product.code.replace(`"`, ''))
           ? 0
@@ -139,12 +148,5 @@ export class CronService {
         imported_t: new Date().toISOString(),
       } as Products;
     });
-
-    await this.productRepository.insert(productsOnJsonFile);
-
-    const file: Partial<Files> = {
-      fileName,
-    };
-    await this.fileRepository.save(file);
   }
 }
