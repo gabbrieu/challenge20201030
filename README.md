@@ -61,6 +61,8 @@ $ yarn start:dev
 # Mas você ainda pode utilizar o Postman e o Insomnia, ou qualquer outro se preferir.
 ```
 
+O CRUD estará na url base <http://localhost:PORT/products> e o endpoint de informações básicas em <http://localhost:PORT>.
+
 Para os testes unitários rode o seguinte comando pelo terminal/cmd na pasta raíz do projeto:
 
 ```bash

@@ -76,7 +76,9 @@ export class CronService {
   }
 
   async downloadFile(fileName: string) {
-    const url = process.env.BASE_FILE_URL;
+    const url =
+      process.env.BASE_FILE_URL || 'https://challenges.coode.sh/food/data/json';
+
     try {
       const response = this.httpService.get(`${url}/${fileName}`, {
         responseType: 'stream',
